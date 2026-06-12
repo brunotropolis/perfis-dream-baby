@@ -42,13 +42,14 @@
     @keyframes twinkle { 0%,100%{opacity:.25} 50%{opacity:.95} }
     .float-slow { animation: floaty 7s ease-in-out infinite; }
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    @media(max-width:700px){ .deco.float-slow{ display:none } }
     .glow-spot{
       position: fixed; z-index: 0; pointer-events: none; border-radius: 50%;
       filter: blur(90px); opacity: .5;
     }
 
     #quiz-wrapper {
-      background: rgba(255,255,255,.07);
+      background: linear-gradient(170deg, rgba(61,26,91,.92), rgba(47,20,82,.94));
       border: 1px solid rgba(255,255,255,.16);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -207,7 +208,10 @@
       color: var(--texto-suave);
       font-size: 15px;
       font-weight: 600;
-      min-height: 24px;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: opacity .3s ease;
     }
     .loading-bar {
@@ -509,10 +513,10 @@ fbq('track', 'PageView');
     const fill = document.getElementById('loading-fill');
     const msg = document.getElementById('loading-msg');
     const passos = [
-      { t: 200,  pct: 30, m: LOADING_MSGS[0] },
-      { t: 1200, pct: 65, m: LOADING_MSGS[1] },
-      { t: 2200, pct: 92, m: LOADING_MSGS[2] },
-      { t: 2900, pct: 100, m: LOADING_MSGS[2] }
+      { t: 200,  pct: 25, m: LOADING_MSGS[0] },
+      { t: 1500, pct: 55, m: LOADING_MSGS[1] },
+      { t: 2900, pct: 85, m: LOADING_MSGS[2] },
+      { t: 3800, pct: 100, m: LOADING_MSGS[2] }
     ];
     passos.forEach(function (p) {
       setTimeout(function () {
@@ -523,7 +527,7 @@ fbq('track', 'PageView');
 
     setTimeout(function () {
       window.location.href = '/' + slug + '/' + window.location.search;
-    }, 3200);
+    }, 4200);
   }
 
   // ─── Init ────────────────────────────────────────────────────
