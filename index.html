@@ -412,6 +412,7 @@ fbq('track', 'PageView');
   let currentScreen = 0;
   let score = 0;
   const answers = new Array(TOTAL_QUESTIONS).fill(null);
+  const questionAnswered = new Array(TOTAL_QUESTIONS).fill(false);
 
   // ─── Result profiles ──────────────────────────────────────────
   const PROFILES = {
@@ -449,6 +450,15 @@ fbq('track', 'PageView');
     score = score - prev + points;
     answers[questionIdx] = points;
 
+    // Funnel tracking — dispara 1x por pergunta (na primeira resposta)
+    if (!questionAnswered[questionIdx]) {
+      questionAnswered[questionIdx] = true;
+      trackEvent('question_answered', 'q' + (questionIdx + 1));
+    }
+    // Answer-level tracking — qual opção foi escolhida (1-based) p/ "principais respostas"
+    const optIdx = Array.prototype.indexOf.call(container.querySelectorAll('.option-btn'), btn) + 1;
+    trackEvent('answer_choice', 'q' + (questionIdx + 1) + '_o' + optIdx);
+
     setTimeout(() => {
       if (questionIdx < TOTAL_QUESTIONS - 1) {
         showScreen(questionIdx + 1);
@@ -483,6 +493,13 @@ fbq('track', 'PageView');
         })
       });
     } catch(e) {}
+  }
+
+  // Quiz start (1x na carga) — alimenta "iniciaram" no dashboard
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => trackEvent('quiz_start', 'start'));
+  } else {
+    trackEvent('quiz_start', 'start');
   }
 
   // ─── Loading + redirect pro perfil ────────────────────────────
