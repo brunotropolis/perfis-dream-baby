@@ -477,7 +477,25 @@ fbq('track', 'PageView');
 
   // ─── Analytics Tracking ────────────────────────────────────
   const TRACKING_URL = 'https://script.google.com/macros/s/AKfycbzh-GOfXA6A8tYKfn7U8fK4MXYI40M5CKMyTPergH9EqvjYGF2j5LbFQE68LhMKsQFm/exec';
-  const QUIZ_VERSION = 'perfis';
+
+  // origem: pago (anúncio) vs orgânico — define a versão de tracking
+  // regra: fbclid/gclid (auto no clique do anúncio) ou tags explícitas = pago;
+  //        stories/bio/organico = orgânico; default = orgânico
+  function detectaOrigem(){
+    var qs = new URLSearchParams(location.search);
+    var src = (qs.get('utm_source')||'').toLowerCase();
+    var med = (qs.get('utm_medium')||'').toLowerCase();
+    var camp = (qs.get('utm_campaign')||'').toLowerCase();
+    var blob = src + ' ' + med + ' ' + camp;
+    if (/organic|stories|story|\bbio\b|perfil/.test(blob)) return 'perfis-organico';
+    var pago = !!(qs.get('fbclid') || qs.get('gclid') || qs.get('ttclid'))
+      || /cpc|cpm|paid|ppc/.test(med)
+      || /\[drm\]|\bads\b|trafego|cpc|cpm|conversao|paid/.test(camp)
+      || /-ads|paid/.test(src);
+    return pago ? 'perfis-pago' : 'perfis-organico';
+  }
+  const QUIZ_VERSION = detectaOrigem();
+  try { sessionStorage.setItem('db_quiz_version', QUIZ_VERSION); } catch(e){}
 
   function trackEvent(eventType, profileName) {
     try {

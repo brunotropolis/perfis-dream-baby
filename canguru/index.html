@@ -1071,9 +1071,21 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
 /* repasse de UTMs (anuncio -> quiz -> resultado -> checkout Greenn) + tracking */
 (function(){
   var TRACKING_URL = 'https://script.google.com/macros/s/AKfycbzh-GOfXA6A8tYKfn7U8fK4MXYI40M5CKMyTPergH9EqvjYGF2j5LbFQE68LhMKsQFm/exec';
+  // mesma origem detectada no quiz (preferir sessionStorage; senão re-detecta pela URL)
+  function quizVersion(){
+    try { var v = sessionStorage.getItem('db_quiz_version'); if (v) return v; } catch(e){}
+    var qs = new URLSearchParams(location.search);
+    var src=(qs.get('utm_source')||'').toLowerCase(), med=(qs.get('utm_medium')||'').toLowerCase(), camp=(qs.get('utm_campaign')||'').toLowerCase();
+    var blob = src+' '+med+' '+camp;
+    if (/organic|stories|story|\bbio\b|perfil/.test(blob)) return 'perfis-organico';
+    var pago = !!(qs.get('fbclid')||qs.get('gclid')||qs.get('ttclid'))
+      || /cpc|cpm|paid|ppc/.test(med) || /\[drm\]|\bads\b|trafego|cpc|cpm|conversao|paid/.test(camp) || /-ads|paid/.test(src);
+    return pago ? 'perfis-pago' : 'perfis-organico';
+  }
+  var QV = quizVersion();
   function trackEvent(eventType, profileName){
     try { fetch(TRACKING_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
-      body: JSON.stringify({quiz_version:'perfis', event_type:eventType, profile:profileName, user_agent:navigator.userAgent})}); } catch(e){}
+      body: JSON.stringify({quiz_version:QV, event_type:eventType, profile:profileName, user_agent:navigator.userAgent})}); } catch(e){}
   }
   var KEYS = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','src','sck','fbclid'];
   var qs = new URLSearchParams(location.search);
