@@ -1068,6 +1068,7 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
 /* repasse de UTMs (anuncio -> quiz -> resultado -> checkout Greenn) + tracking */
 (function(){
   var TRACKING_URL = 'https://script.google.com/macros/s/AKfycbzh-GOfXA6A8tYKfn7U8fK4MXYI40M5CKMyTPergH9EqvjYGF2j5LbFQE68LhMKsQFm/exec';
+  var EH_BOT = navigator.webdriver === true || /bot|crawl|spider|slurp|facebookexternalhit|facebookcatalog|whatsapp|telegram|preview|headless|lighthouse|pagespeed/i.test(navigator.userAgent || '');
   // mesma origem detectada no quiz (preferir sessionStorage; senão re-detecta pela URL)
   function quizVersion(){
     try { var v = sessionStorage.getItem('db_quiz_version'); if (v) return v; } catch(e){}
@@ -1081,6 +1082,7 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
   }
   var QV = quizVersion();
   function trackEvent(eventType, profileName){
+    if (EH_BOT) return;
     try { fetch(TRACKING_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
       body: JSON.stringify({quiz_version:QV, event_type:eventType, profile:profileName, user_agent:navigator.userAgent})}); } catch(e){}
   }

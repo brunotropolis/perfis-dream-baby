@@ -450,6 +450,7 @@ fbq('track', 'PageView');
 
   // ─── Option selection ─────────────────────────────────────────
   function selectOption(btn, questionIdx, points) {
+    if (typeof marcarInicio === 'function') marcarInicio();
     const container = btn.closest('.options');
     container.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
@@ -505,7 +506,12 @@ fbq('track', 'PageView');
   const QUIZ_VERSION = detectaOrigem();
   try { sessionStorage.setItem('db_quiz_version', QUIZ_VERSION); } catch(e){}
 
+  // ignora bots / crawlers / automação (não poluem o tracking)
+  var EH_BOT = navigator.webdriver === true ||
+    /bot|crawl|spider|slurp|facebookexternalhit|facebookcatalog|whatsapp|telegram|preview|headless|lighthouse|pagespeed|gtmetrix/i.test(navigator.userAgent || '');
+
   function trackEvent(eventType, profileName) {
+    if (EH_BOT) return;
     try {
       fetch(TRACKING_URL, {
         method: 'POST',
@@ -521,12 +527,17 @@ fbq('track', 'PageView');
     } catch(e) {}
   }
 
-  // Quiz start (1x na carga) — alimenta "iniciaram" no dashboard
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => trackEvent('quiz_start', 'start'));
-  } else {
+  // Quiz start dispara só na PRIMEIRA interação humana real (mouse/toque/scroll/tecla),
+  // não no load — assim prefetch/crawler/preview de link não inflam "iniciaram".
+  var jaIniciou = false;
+  var SINAIS = ['pointerdown','touchstart','keydown','wheel','scroll','mousemove'];
+  function marcarInicio() {
+    if (jaIniciou) return;
+    jaIniciou = true;
+    SINAIS.forEach(function(ev){ window.removeEventListener(ev, marcarInicio); });
     trackEvent('quiz_start', 'start');
   }
+  SINAIS.forEach(function(ev){ window.addEventListener(ev, marcarInicio, { passive: true }); });
 
   // ─── Loading + redirect pro perfil ────────────────────────────
   const LOADING_MSGS = [
