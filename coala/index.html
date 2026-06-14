@@ -1083,11 +1083,10 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
   function quizVersion(){
     try { var v = sessionStorage.getItem('db_quiz_version'); if (v) return v; } catch(e){}
     var qs = new URLSearchParams(location.search);
-    var src=(qs.get('utm_source')||'').toLowerCase(), med=(qs.get('utm_medium')||'').toLowerCase(), camp=(qs.get('utm_campaign')||'').toLowerCase();
-    var blob = src+' '+med+' '+camp;
-    if (/organic|stories|story|\bbio\b|perfil/.test(blob)) return 'perfis-organico';
+    var med=(qs.get('utm_medium')||'').toLowerCase(), camp=(qs.get('utm_campaign')||'').toLowerCase();
     var pago = !!(qs.get('fbclid')||qs.get('gclid')||qs.get('ttclid'))
-      || /cpc|cpm|paid|ppc/.test(med) || /\[drm\]|\bads\b|trafego|cpc|cpm|conversao|paid/.test(camp) || /-ads|paid/.test(src);
+      || /\[trafego\]|\[drm\]|\[rmkt\]|\[cbo\]|\[abo\]|trafego|conversao|\bads\b|cpc|cpm|ppc|paid/.test(camp)
+      || /cpc|cpm|ppc|paid/.test(med);
     return pago ? 'perfis-pago' : 'perfis-organico';
   }
   var QV = quizVersion();
