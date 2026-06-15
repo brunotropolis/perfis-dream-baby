@@ -1061,8 +1061,12 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
   var QV = quizVersion();
   function trackEvent(eventType, profileName){
     if (EH_BOT) return;
-    try { fetch(TRACKING_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
-      body: JSON.stringify({quiz_version:QV, event_type:eventType, profile:profileName, user_agent:navigator.userAgent})}); } catch(e){}
+    var payload = JSON.stringify({quiz_version:QV, event_type:eventType, profile:profileName, user_agent:navigator.userAgent});
+    try {
+      // sendBeacon garante a entrega mesmo quando o clique de comprar navega pro checkout (fetch seria cancelado)
+      if (navigator.sendBeacon) { navigator.sendBeacon(TRACKING_URL, new Blob([payload], {type:'text/plain'})); }
+      else { fetch(TRACKING_URL, {method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'text/plain'}, body:payload}); }
+    } catch(e){}
   }
   // "chegou na página de resultado" — dispara 1x na 1ª interação humana (anti prefetch/bot)
   var pvDone=false, PVSIG=['pointerdown','touchstart','keydown','wheel','scroll','mousemove'];
