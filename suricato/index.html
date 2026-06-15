@@ -895,7 +895,7 @@ fbq('track', 'ViewContent', {content_name: 'resultado-suricato', content_categor
 
       <!-- >>> PLACEHOLDER: trocar pelo link de pagamento <<< -->
       <!-- [PERFIL] nome do perfil no CTA -->
-      <a class="btn btn-lg btn-comprar" href="https://payfast.greenn.com.br/119638/offer/3rjIno?ch_id=140071&b_id_1=119672&b_offer_1=M6CwQc&b_id_2=119627&b_offer_2=UNkLyv&b_id_3=122540&b_offer_3=XwdFeZ">Quero!</a>
+      <a class="btn btn-lg btn-comprar" href="https://payfast.greenn.com.br/119638/offer/3rjIno?ch_id=140071&b_id_1=119627&b_offer_1=UNkLyv&b_id_2=119672&b_offer_2=M6CwQc">Quero!</a>
       <p class="micro">🔒 Pagamento 100% seguro · Visa · Mastercard · Pix · PayPal</p>
     </div>
   </div>
@@ -1005,7 +1005,7 @@ fbq('track', 'ViewContent', {content_name: 'resultado-suricato', content_categor
     <div class="reveal" style="margin-top:34px">
       <!-- >>> PLACEHOLDER: trocar pelo link de pagamento <<< -->
       <!-- [PERFIL] -->
-      <a class="btn btn-lg btn-comprar" href="https://payfast.greenn.com.br/119638/offer/3rjIno?ch_id=140071&b_id_1=119672&b_offer_1=M6CwQc&b_id_2=119627&b_offer_2=UNkLyv&b_id_3=122540&b_offer_3=XwdFeZ">Quero!</a>
+      <a class="btn btn-lg btn-comprar" href="https://payfast.greenn.com.br/119638/offer/3rjIno?ch_id=140071&b_id_1=119627&b_offer_1=UNkLyv&b_id_2=119672&b_offer_2=M6CwQc">Quero!</a>
     </div>
   </div>
 </section>
@@ -1096,6 +1096,10 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
     try { fetch(TRACKING_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
       body: JSON.stringify({quiz_version:QV, event_type:eventType, profile:profileName, user_agent:navigator.userAgent})}); } catch(e){}
   }
+  // "chegou na página de resultado" — dispara 1x na 1ª interação humana (anti prefetch/bot)
+  var pvDone=false, PVSIG=['pointerdown','touchstart','keydown','wheel','scroll','mousemove'];
+  function pvFire(){ if(pvDone)return; pvDone=true; PVSIG.forEach(function(ev){window.removeEventListener(ev,pvFire);}); trackEvent('page_view','Suricato'); }
+  PVSIG.forEach(function(ev){ window.addEventListener(ev,pvFire,{passive:true}); });
   var KEYS = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','src','sck','fbclid'];
   var qs = new URLSearchParams(location.search);
   var saved = {};
