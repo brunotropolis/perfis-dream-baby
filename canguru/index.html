@@ -547,8 +547,25 @@ n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '2199334337151314');
-fbq('track', 'PageView');
-fbq('track', 'ViewContent', {content_name: 'resultado-canguru', content_category: 'quiz-resultado', value: 67.0, currency: 'BRL'});
+(function(){
+  var CAPI='https://n8n-n8n.xktssy.easypanel.host/webhook/perfis-capi';
+  function gc(n){var m=document.cookie.match('(^|; )'+n+'=([^;]+)');return m?decodeURIComponent(m[2]):'';}
+  function eid(){return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);}
+  var BOT=navigator.webdriver===true||/bot|crawl|spider|slurp|facebookexternalhit|facebookcatalog|whatsapp|telegram|preview|headless|lighthouse|pagespeed/i.test(navigator.userAgent||'');
+  window.trackMeta=function(ev,cd){
+    var id=eid();
+    try{ if(window.fbq) fbq('track',ev,cd||{},{eventID:id}); }catch(e){}
+    if(BOT) return;
+    try{
+      var p={event_name:ev,event_id:id,event_time:Math.floor(Date.now()/1000),event_source_url:location.href,fbp:gc('_fbp'),fbc:gc('_fbc'),user_agent:navigator.userAgent,custom_data:cd||{}};
+      var blob=new Blob([JSON.stringify(p)],{type:'application/json'});
+      if(navigator.sendBeacon) navigator.sendBeacon(CAPI,blob);
+      else fetch(CAPI,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+    }catch(e){}
+  };
+  trackMeta('PageView');
+})();
+trackMeta('ViewContent', {content_name: 'resultado-canguru', content_category: 'quiz-resultado', value: 67.0, currency: 'BRL'});
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2199334337151314&ev=PageView&noscript=1"/></noscript>
 <!-- Microsoft Clarity -->
@@ -1086,7 +1103,8 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
     }
     a.addEventListener('click', function(){
       trackEvent('button_click', 'Canguru');
-      if (window.fbq) fbq('track', 'InitiateCheckout', {content_name: 'dream-baby-canguru', value: 67.0, currency: 'BRL'});
+      if (window.trackMeta) window.trackMeta('InitiateCheckout', {content_name: 'dream-baby-canguru', value: 67.0, currency: 'BRL'});
+      else if (window.fbq) fbq('track', 'InitiateCheckout', {content_name: 'dream-baby-canguru', value: 67.0, currency: 'BRL'});
     });
   });
 })();
