@@ -413,7 +413,7 @@ fbq('init', '2199334337151314');
         <span class="option-circle"><span class="option-circle-inner"></span></span>
         <span class="option-text">Ajudar meu bebê relaxar para dormir, dia e noite ele não dorme bem nem mesmo no colo.</span>
       </button>
-      <button class="option-btn" onclick="selectOption(this, 4, 2)">
+      <button class="option-btn" onclick="selectOption(this, 4, 1)">
         <span class="option-circle"><span class="option-circle-inner"></span></span>
         <span class="option-text">Não tenho dificuldade com o sono, meu bebê dorme bem e no berço a maioria das vezes.</span>
       </button>
@@ -441,6 +441,7 @@ fbq('init', '2199334337151314');
 
   // ─── Result profiles ──────────────────────────────────────────
   const PROFILES = {
+    1: { animal: 'Preguiça' },
     2: { animal: 'Coruja' },
     3: { animal: 'Leão' },
     4: { animal: 'Suricato' },
@@ -566,11 +567,11 @@ fbq('init', '2199334337151314');
     if (score >= 6) {
       profile = PROFILES.coala;
     } else {
-      // score 1 redirects to Coruja (score 2) — Preguicinha removed
+      // score 1 = Preguiça (bom dormidor); fallback Coruja por segurança
       profile = PROFILES[score] || PROFILES[2];
     }
 
-    const SLUGS = { 'Coruja': 'coruja', 'Leão': 'leao', 'Suricato': 'suricato', 'Canguru': 'canguru', 'Coala': 'coala' };
+    const SLUGS = { 'Preguiça': 'preguica', 'Coruja': 'coruja', 'Leão': 'leao', 'Suricato': 'suricato', 'Canguru': 'canguru', 'Coala': 'coala' };
     const slug = SLUGS[profile.animal] || 'coruja';
 
     trackEvent('quiz_complete', profile.animal);

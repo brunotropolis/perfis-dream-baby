@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Você tem um bebê Preguiça | Dream Baby Pocket</title>
+<meta name="description" content="Resultado do seu quiz: seu bebê é uma Preguiça — dorme bem de dia e de noite, em qualquer lugar e de forma plena.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --roxo-900:#23103f; --roxo-700:#3d1a5b;
+  --magenta:#c4147a; --pink:#ff4f9a; --laranja:#ff8a3d;
+  --texto-claro:#f5edff; --texto-suave:rgba(245,237,255,.82);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+img{max-width:100%;display:block}
+body{
+  font-family:'Quicksand',sans-serif; font-weight:500; color:var(--texto-claro);
+  background:radial-gradient(125% 90% at 50% 0%, var(--roxo-700) 0%, var(--roxo-900) 62%);
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:36px 20px; text-align:center; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+.wrap{max-width:580px; display:flex; flex-direction:column; align-items:center}
+.mascote{
+  width:min(300px,70vw); height:auto; border-radius:24px;
+  filter:drop-shadow(0 18px 42px rgba(0,0,0,.45));
+  animation:flo 6s ease-in-out infinite;
+}
+@keyframes flo{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@media(prefers-reduced-motion:reduce){.mascote{animation:none}}
+.tag{
+  font-weight:700; letter-spacing:.14em; text-transform:uppercase; font-size:13px;
+  color:var(--pink); margin-top:22px;
+}
+h1{
+  font-family:'Cardo',serif; font-weight:700; line-height:1.16; letter-spacing:.02em;
+  font-size:clamp(27px,6.6vw,42px); margin:8px 0 14px;
+}
+h1 .hl{
+  background:linear-gradient(100deg,var(--pink) 0%,var(--laranja) 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+p.sub{
+  font-size:clamp(16px,4.3vw,21px); font-weight:500; color:var(--texto-suave);
+  line-height:1.5; max-width:460px;
+}
+.foot{ margin-top:38px; font-size:13px; color:rgba(245,237,255,.55); line-height:1.6 }
+.foot b{ color:var(--texto-claro); font-weight:700; letter-spacing:.02em }
+</style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2199334337151314');
+(function(){
+  var CAPI='https://n8n-n8n.xktssy.easypanel.host/webhook/perfis-capi';
+  function gc(n){var m=document.cookie.match('(^|; )'+n+'=([^;]+)');return m?decodeURIComponent(m[2]):'';}
+  function eid(){return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);}
+  var BOT=navigator.webdriver===true||/bot|crawl|spider|slurp|facebookexternalhit|facebookcatalog|whatsapp|telegram|preview|headless|lighthouse|pagespeed/i.test(navigator.userAgent||'');
+  window.trackMeta=function(ev,cd){
+    var id=eid();
+    try{ if(window.fbq) fbq('track',ev,cd||{},{eventID:id}); }catch(e){}
+    if(BOT) return;
+    try{
+      var p={event_name:ev,event_id:id,event_time:Math.floor(Date.now()/1000),event_source_url:location.href,fbp:gc('_fbp'),fbc:gc('_fbc'),user_agent:navigator.userAgent,custom_data:cd||{}};
+      var blob=new Blob([JSON.stringify(p)],{type:'text/plain'});
+      if(navigator.sendBeacon) navigator.sendBeacon(CAPI,blob);
+      else fetch(CAPI,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)});
+    }catch(e){}
+  };
+  trackMeta('PageView');
+})();
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2199334337151314&ev=PageView&noscript=1"/></noscript>
+<!-- Microsoft Clarity -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window,document,"clarity","script","iea4ittipt");
+</script>
+</head>
+<body>
+  <div class="wrap">
+    <img class="mascote" src="../assets/preguica.webp" alt="Mascote bebê Preguiça" fetchpriority="high" decoding="async">
+    <div class="tag">✨ Resultado do seu quiz</div>
+    <h1>Parabéns! Você tem um <span class="hl">bebê Preguiça</span></h1>
+    <p class="sub">Que dorme bem de dia e de noite, em qualquer lugar e de forma plena. 💜</p>
+    <div class="foot"><b>Dream Baby Pocket</b><br>Um curso do Manual do Recém-Nascido ♥</div>
+  </div>
+</body>
+</html>
