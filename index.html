@@ -251,9 +251,9 @@ fbq('init', '2199334337151314');
     if(BOT) return;
     try{
       var p={event_name:ev,event_id:id,event_time:Math.floor(Date.now()/1000),event_source_url:location.href,fbp:gc('_fbp'),fbc:gc('_fbc'),user_agent:navigator.userAgent,custom_data:cd||{}};
-      var blob=new Blob([JSON.stringify(p)],{type:'application/json'});
+      var blob=new Blob([JSON.stringify(p)],{type:'text/plain'});
       if(navigator.sendBeacon) navigator.sendBeacon(CAPI,blob);
-      else fetch(CAPI,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+      else fetch(CAPI,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)});
     }catch(e){}
   };
   trackMeta('PageView');
