@@ -1084,7 +1084,13 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
   try { saved = JSON.parse(sessionStorage.getItem('db_utms')||'{}'); } catch(e){}
   KEYS.forEach(function(k){ var v = qs.get(k); if (v) saved[k] = v; });
   try { sessionStorage.setItem('db_utms', JSON.stringify(saved)); } catch(e){}
-  var pairs = Object.keys(saved).map(function(k){ return k + '=' + encodeURIComponent(saved[k]); });
+  // fbp/fbc/ua pro Purchase server-side (Greenn ecoa params da URL -> saleMetas -> n8n CAPI)
+  function gc(n){ var m=document.cookie.match('(^|;)\s*'+n+'\s*=\s*([^;]+)'); return m?m.pop():''; }
+  var all = {}; Object.keys(saved).forEach(function(k){ all[k]=saved[k]; });
+  var _fbp=gc('_fbp'); if(_fbp) all.fbp=_fbp;
+  var _fbc=gc('_fbc'); if(_fbc) all.fbc=_fbc;
+  try { all.ua = navigator.userAgent; } catch(e){}
+  var pairs = Object.keys(all).map(function(k){ return k + '=' + encodeURIComponent(all[k]); });
   document.querySelectorAll('a.btn-comprar').forEach(function(a){
     var href = a.getAttribute('href') || '';
     if (pairs.length && href.indexOf('#') !== 0) {
