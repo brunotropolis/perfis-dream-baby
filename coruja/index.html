@@ -539,6 +539,15 @@ footer .copy{font-size:12.5px;color:rgba(245,237,255,.38)}
   .twinkle,.float-slow,.float-slower{animation:none}
 }
 </style>
+<!-- TikTok Pixel -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var s=d.createElement("script");s.type="text/javascript",s.async=!0,s.src=r+"?sdkid="+e+"&lib="+t;var a=d.getElementsByTagName("script")[0];a.parentNode.insertBefore(s,a)};
+  ttq.load("CKBAUIBC77U2JMMIPN5G");
+  ttq.page();
+}(window, document, "ttq");
+</script>
+<!-- End TikTok Pixel -->
 <!-- Meta Pixel -->
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -577,15 +586,6 @@ trackMeta('ViewContent', {content_name: 'resultado-coruja', content_category: 'q
     y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 })(window,document,"clarity","script","iea4ittipt");
 </script>
-<!-- TikTok Pixel -->
-<script>
-!function (w, d, t) {
-  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var s=d.createElement("script");s.type="text/javascript",s.async=!0,s.src=r+"?sdkid="+e+"&lib="+t;var a=d.getElementsByTagName("script")[0];a.parentNode.insertBefore(s,a)};
-  ttq.load("CKBAUIBC77U2JMMIPN5G");
-  ttq.page();
-}(window, document, "ttq");
-</script>
-<!-- End TikTok Pixel -->
 </head>
 <body>
 
@@ -1057,6 +1057,22 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
 </script>
 <!-- player VTurb -->
 <script type="text/javascript"> var s=document.createElement("script"); s.src="https://scripts.converteai.net/1e9d3663-4e9d-45cb-9c39-1d16362c41e5/players/69d554d40651771d3da816c8/v4/player.js", s.async=!0,document.head.appendChild(s); </script>
+<!-- tt-events -->
+<script>
+(function(){
+  function gp(n){try{return new URLSearchParams(location.search).get(n)||''}catch(e){return''}}
+  var TT=gp('ttclid');
+  try{ if(TT){sessionStorage.setItem('ttclid',TT);} else {TT=sessionStorage.getItem('ttclid')||'';} }catch(e){}
+  var buys=document.querySelectorAll('a.btn-comprar');
+  var PROD={contents:[{content_id:'119638',content_type:'product',content_name:'Dream Baby Pocket'}],value:67,currency:'BRL'};
+  function fire(ev){ try{ if(window.ttq){ ttq.track(ev,PROD); } }catch(e){} }
+  if(buys.length){ if(window.ttq){fire('ViewContent');} else {window.addEventListener('load',function(){fire('ViewContent');});} }
+  buys.forEach(function(a){
+    if(TT){ var h=a.getAttribute('href')||''; if(h.charAt(0)!=='#' && h.indexOf('ttclid=')<0){ a.href=h+(h.indexOf('?')>-1?'&':'?')+'ttclid='+encodeURIComponent(TT); } }
+    a.addEventListener('click',function(){ fire('InitiateCheckout'); });
+  });
+})();
+</script>
 <script>
 /* repasse de UTMs (anuncio -> quiz -> resultado -> checkout Greenn) + tracking */
 (function(){
@@ -1109,22 +1125,6 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
       if (window.trackMeta) window.trackMeta('InitiateCheckout', {content_name: 'dream-baby-coruja', value: 67.0, currency: 'BRL'});
       else if (window.fbq) fbq('track', 'InitiateCheckout', {content_name: 'dream-baby-coruja', value: 67.0, currency: 'BRL'});
     });
-  });
-})();
-</script>
-<!-- tt-events -->
-<script>
-(function(){
-  function gp(n){try{return new URLSearchParams(location.search).get(n)||''}catch(e){return''}}
-  var TT=gp('ttclid');
-  try{ if(TT){sessionStorage.setItem('ttclid',TT);} else {TT=sessionStorage.getItem('ttclid')||'';} }catch(e){}
-  var buys=document.querySelectorAll('a.btn-comprar');
-  var PROD={contents:[{content_id:'119638',content_type:'product',content_name:'Dream Baby Pocket'}],value:67,currency:'BRL'};
-  function fire(ev){ try{ if(window.ttq){ ttq.track(ev,PROD); } }catch(e){} }
-  if(buys.length){ if(window.ttq){fire('ViewContent');} else {window.addEventListener('load',function(){fire('ViewContent');});} }
-  buys.forEach(function(a){
-    if(TT){ var h=a.getAttribute('href')||''; if(h.charAt(0)!=='#' && h.indexOf('ttclid=')<0){ a.href=h+(h.indexOf('?')>-1?'&':'?')+'ttclid='+encodeURIComponent(TT); } }
-    a.addEventListener('click',function(){ fire('InitiateCheckout'); });
   });
 })();
 </script>
