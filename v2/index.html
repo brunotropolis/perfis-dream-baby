@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz – Qual o perfil de sono do seu bebê?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root{
+      --roxo-900:#23103f;
+      --roxo-700:#3d1a5b;
+      --magenta:#c4147a;
+      --pink:#ff4f9a;
+      --pink-soft:#ff7ab5;
+      --laranja:#ff8a3d;
+      --laranja-soft:#ffb37a;
+      --texto-suave:rgba(245,237,255,.82);
+      --grad-cta:linear-gradient(100deg,#ff4f9a 0%,#ff8a3d 100%);
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(160deg, var(--roxo-700) 0%, #2f1452 45%, var(--magenta) 130%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* céu noturno */
+    .deco { position: fixed; z-index: 0; pointer-events: none; }
+    .twinkle { animation: twinkle 3.4s ease-in-out infinite; }
+    .twinkle.d1 { animation-delay: .9s; }
+    .twinkle.d2 { animation-delay: 1.8s; }
+    @keyframes twinkle { 0%,100%{opacity:.25} 50%{opacity:.95} }
+    .float-slow { animation: floaty 7s ease-in-out infinite; }
+    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    @media(max-width:700px){ .deco.float-slow{ display:none } }
+    .glow-spot{
+      position: fixed; z-index: 0; pointer-events: none; border-radius: 50%;
+      filter: blur(90px); opacity: .5;
+    }
+
+    #quiz-wrapper {
+      background: linear-gradient(170deg, rgba(61,26,91,.92), rgba(47,20,82,.94));
+      border: 1px solid rgba(255,255,255,.16);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 28px;
+      width: 100%;
+      max-width: 440px;
+      min-height: 600px;
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 30px 80px rgba(15,4,35,.55);
+    }
+
+    /* ── Progress bar ── */
+    #progress-bar-track {
+      height: 6px;
+      background: rgba(255,255,255,0.14);
+      width: 100%;
+    }
+    #progress-bar-fill {
+      height: 100%;
+      background: var(--grad-cta);
+      box-shadow: 0 0 12px rgba(255,79,154,.6);
+      transition: width 0.4s ease;
+      border-radius: 0 100px 100px 0;
+    }
+
+    /* ── Header ── */
+    #quiz-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px 0;
+      min-height: 46px;
+    }
+    #btn-back {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 50%;
+      width: 34px; height: 34px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 17px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+    #btn-back:hover { background: rgba(255,255,255,.2); }
+
+    /* ── Screen base ── */
+    .screen {
+      display: none;
+      padding: 0 24px 30px;
+      animation: fadeIn 0.35s ease;
+    }
+    .screen.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Step label ── */
+    .step-label {
+      color: var(--laranja-soft);
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 14px 0 16px;
+    }
+
+    /* ── Question title ── */
+    .question-title {
+      font-family: 'Cardo', serif;
+      letter-spacing: .02em;
+      color: #ffffff;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .question-title u, .question-title span { color: var(--pink-soft); text-decoration: none; }
+
+    /* ── Options ── */
+    .options { display: flex; flex-direction: column; gap: 11px; }
+
+    .option-btn {
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 16px;
+      padding: 15px 16px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s;
+      width: 100%;
+      font-family: 'Quicksand', sans-serif;
+    }
+    .option-btn:hover { background: rgba(255,255,255,.15); border-color: rgba(255,122,181,.55); transform: translateY(-2px); }
+    .option-btn.selected {
+      background: linear-gradient(100deg, rgba(255,79,154,.22), rgba(255,138,61,.18));
+      border-color: var(--pink);
+      box-shadow: 0 6px 22px rgba(255,79,154,.25);
+    }
+
+    .option-circle {
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .18s;
+    }
+    .option-circle-inner {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--grad-cta);
+      display: none;
+    }
+    .option-btn.selected .option-circle-inner { display: block; }
+    .option-btn.selected .option-circle { border-color: var(--pink); }
+
+    .option-text {
+      color: #f5edff;
+      font-size: 14.5px;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    /* ── Tela de loading do resultado ── */
+    #screen-result {
+      text-align: center;
+      padding: 60px 28px 50px;
+    }
+    .loading-lua {
+      width: 90px;
+      margin: 0 auto 6px;
+      animation: luaPulse 1.6s ease-in-out infinite;
+      filter: drop-shadow(0 0 24px rgba(255,217,187,.45));
+    }
+    @keyframes luaPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+    #loading-titulo {
+      font-family: 'Cardo', serif;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      margin: 22px 0 10px;
+    }
+    #loading-msg {
+      color: var(--texto-suave);
+      font-size: 15px;
+      font-weight: 600;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity .3s ease;
+    }
+    .loading-bar {
+      width: 78%;
+      height: 6px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.14);
+      margin: 28px auto 0;
+      overflow: hidden;
+    }
+    .loading-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 100px;
+      background: var(--grad-cta);
+      box-shadow: 0 0 14px rgba(255,79,154,.7);
+      transition: width .35s ease;
+    }
+    .loading-stars { font-size: 13px; color: var(--laranja-soft); margin-top: 22px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  </style>
+<!-- TikTok Pixel -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var s=d.createElement("script");s.type="text/javascript",s.async=!0,s.src=r+"?sdkid="+e+"&lib="+t;var a=d.getElementsByTagName("script")[0];a.parentNode.insertBefore(s,a)};
+  ttq.load("CKBAUIBC77U2JMMIPN5G");
+  ttq.page();
+}(window, document, "ttq");
+</script>
+<!-- End TikTok Pixel -->
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2199334337151314');
+fbq('init', '2103631056813206');
+(function(){
+  var CAPI='https://n8n-n8n.xktssy.easypanel.host/webhook/perfis-capi';
+  function gc(n){var m=document.cookie.match('(^|; )'+n+'=([^;]+)');return m?decodeURIComponent(m[2]):'';}
+  function eid(){return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);}
+  var BOT=navigator.webdriver===true||/bot|crawl|spider|slurp|facebookexternalhit|facebookcatalog|whatsapp|telegram|preview|headless|lighthouse|pagespeed/i.test(navigator.userAgent||'');
+  window.trackMeta=function(ev,cd){
+    var id=eid();
+    try{ if(window.fbq) fbq('track',ev,cd||{},{eventID:id}); }catch(e){}
+    if(BOT) return;
+    try{
+      var p={event_name:ev,event_id:id,event_time:Math.floor(Date.now()/1000),event_source_url:location.href,fbp:gc('_fbp'),fbc:gc('_fbc'),user_agent:navigator.userAgent,custom_data:cd||{}};
+      var blob=new Blob([JSON.stringify(p)],{type:'text/plain'});
+      if(navigator.sendBeacon) navigator.sendBeacon(CAPI,blob);
+      else fetch(CAPI,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)});
+    }catch(e){}
+  };
+  trackMeta('PageView');
+})();
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2199334337151314&ev=PageView&noscript=1"/></noscript>
+<!-- Microsoft Clarity -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window,document,"clarity","script","iea4ittipt");
+</script>
+</head>
+<body>
+
+<!-- céu noturno -->
+<div class="glow-spot" style="width:480px;height:480px;background:#c4147a;top:-160px;right:-140px"></div>
+<div class="glow-spot" style="width:380px;height:380px;background:#5b2d8f;bottom:-140px;left:-120px"></div>
+<svg class="deco twinkle" style="top:10%;left:8%" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 1l2.6 7.4L22 11l-7.4 2.6L12 21l-2.6-7.4L2 11l7.4-2.6L12 1z" fill="#ffd9bb"/></svg>
+<svg class="deco twinkle d1" style="top:18%;right:10%" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 1l2.6 7.4L22 11l-7.4 2.6L12 21l-2.6-7.4L2 11l7.4-2.6L12 1z" fill="#fff"/></svg>
+<svg class="deco twinkle d2" style="bottom:16%;left:12%" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 1l2.6 7.4L22 11l-7.4 2.6L12 21l-2.6-7.4L2 11l7.4-2.6L12 1z" fill="#ff7ab5"/></svg>
+<svg class="deco twinkle" style="bottom:24%;right:14%" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 1l2.6 7.4L22 11l-7.4 2.6L12 21l-2.6-7.4L2 11l7.4-2.6L12 1z" fill="#fff"/></svg>
+<svg class="deco float-slow" style="top:6%;right:22%" width="64" height="64" viewBox="0 0 100 100" fill="none"><path d="M68 8a44 44 0 1 0 24 56A36 36 0 0 1 68 8z" fill="#ffd9bb" opacity=".85"/></svg>
+
+<div id="quiz-wrapper">
+
+  <!-- Progress bar -->
+  <div id="progress-bar-track">
+    <div id="progress-bar-fill" style="width: 0%"></div>
+  </div>
+
+  <!-- Header -->
+  <div id="quiz-header">
+    <button id="btn-back" onclick="goBack()">&#8592;</button>
+  </div>
+
+  <!-- Q1 -->
+  <div class="screen" id="screen-0">
+    <p class="step-label">✨ Pergunta 1 de 5</p>
+    <h2 class="question-title">Qual é a idade do seu bebê?</h2>
+    <div class="options">
+      <button class="option-btn" onclick="selectOption(this, 0, 6)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Até 30 dias ou não nasceu ainda</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 0, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">01 a 03 meses</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 0, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">03 a 06 meses</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 0, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">06 a 09 meses</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 0, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">09 a 12 meses</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="screen" id="screen-1">
+    <p class="step-label">✨ Pergunta 2 de 5</p>
+    <h2 class="question-title">Como são as sonecas do dia?</h2>
+    <div class="options">
+      <button class="option-btn" onclick="selectOption(this, 1, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Só dorme bem se estiver no colo</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 1, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Dorme bem e no berço de dia</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 1, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Faz sonecas, mas sinto que precisa dormir mais</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 1, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Quase não dorme, fica irritado a maior parte do tempo</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="screen" id="screen-2">
+    <p class="step-label">✨ Pergunta 3 de 5</p>
+    <h2 class="question-title">Como é o sono noturno do seu bebê?</h2>
+    <div class="options">
+      <button class="option-btn" onclick="selectOption(this, 2, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Só dorme bem se for no colo, ou deitado comigo</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 2, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Dorme bem, mas tem muitos despertares</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 2, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">À noite dorme muito bem e no berço</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="screen" id="screen-3">
+    <p class="step-label">✨ Pergunta 4 de 5</p>
+    <h2 class="question-title">Como você sente a qualidade do sono do seu bebê?</h2>
+    <div class="options">
+      <button class="option-btn" onclick="selectOption(this, 3, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Se for no colo dorme profundamente, mas se colocar no berço acorda logo.</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 3, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">De dia o sono é mais profundo, mas a noite fica mais leve.</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 3, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">De noite tem sono profundo, mas de dia é leve.</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 3, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">De dia e à noite o sono é mais leve, parece que não dorme bem em nenhum período.</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 3, 0)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Dorme bem em qualquer lugar, de dia e à noite.</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="screen" id="screen-4">
+    <p class="step-label">✨ Última pergunta</p>
+    <h2 class="question-title">Qual a sua <span>maior dificuldade</span> no sono do seu bebê?</h2>
+    <div class="options">
+      <button class="option-btn" onclick="selectOption(this, 4, 5)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Minha dificuldade está no dia e na noite, em fazer meu bebê dormir fora do colo/colado em mim, quero fazê-lo aceitar o berço.</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 4, 2)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Minha maior dificuldade está sendo com o sono da noite, meu bebê tem muitos despertares, ou não dorme bem.</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 4, 3)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Minha dificuldade está nas sonecas do dia, queria que fosse tranquilo como ele/a dorme à noite.</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 4, 4)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Ajudar meu bebê relaxar para dormir, dia e noite ele não dorme bem nem mesmo no colo.</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(this, 4, 1)">
+        <span class="option-circle"><span class="option-circle-inner"></span></span>
+        <span class="option-text">Não tenho dificuldade com o sono, meu bebê dorme bem e no berço a maioria das vezes.</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading do resultado (mascote fica pra página do perfil) -->
+  <div class="screen" id="screen-result">
+    <svg class="loading-lua" viewBox="0 0 100 100" fill="none"><path d="M68 8a44 44 0 1 0 24 56A36 36 0 0 1 68 8z" fill="#ffd9bb"/></svg>
+    <h2 id="loading-titulo">Analisando as suas respostas</h2>
+    <p id="loading-msg">Comparando com mais de 10 mil famílias...</p>
+    <div class="loading-bar"><div class="loading-bar-fill" id="loading-fill"></div></div>
+    <p class="loading-stars">✨ Quase lá</p>
+  </div>
+
+</div><!-- /quiz-wrapper -->
+
+<script>
+  // ─── Quiz state ───────────────────────────────────────────────
+  const TOTAL_QUESTIONS = 5;
+  let currentScreen = 0;
+  let score = 0;
+  const answers = new Array(TOTAL_QUESTIONS).fill(null);
+  const questionAnswered = new Array(TOTAL_QUESTIONS).fill(false);
+
+  // ─── Result profiles ──────────────────────────────────────────
+  const PROFILES = {
+    1: { animal: 'Preguiça' },
+    2: { animal: 'Coruja' },
+    3: { animal: 'Leão' },
+    4: { animal: 'Suricato' },
+    5: { animal: 'Canguru' },
+    coala: { animal: 'Coala' }
+  };
+
+  // ─── Helpers ──────────────────────────────────────────────────
+  function getScreen(idx) {
+    if (idx < TOTAL_QUESTIONS) return document.getElementById('screen-' + idx);
+    return document.getElementById('screen-result');
+  }
+
+  function showScreen(idx) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    getScreen(idx).classList.add('active');
+    currentScreen = idx;
+
+    document.getElementById('btn-back').style.display = (idx > 0 && idx < TOTAL_QUESTIONS) ? 'flex' : 'none';
+
+    const pct = idx < TOTAL_QUESTIONS ? (idx / TOTAL_QUESTIONS) * 100 : 100;
+    document.getElementById('progress-bar-fill').style.width = pct + '%';
+  }
+
+  // ─── Option selection ─────────────────────────────────────────
+  function selectOption(btn, questionIdx, points) {
+    if (typeof marcarInicio === 'function') marcarInicio();
+    const container = btn.closest('.options');
+    container.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    const prev = answers[questionIdx] || 0;
+    score = score - prev + points;
+    answers[questionIdx] = points;
+
+    // Funnel tracking — dispara 1x por pergunta (na primeira resposta)
+    if (!questionAnswered[questionIdx]) {
+      questionAnswered[questionIdx] = true;
+      trackEvent('question_answered', 'q' + (questionIdx + 1));
+    }
+    // Answer-level tracking — qual opção foi escolhida (1-based) p/ "principais respostas"
+    const optIdx = Array.prototype.indexOf.call(container.querySelectorAll('.option-btn'), btn) + 1;
+    trackEvent('answer_choice', 'q' + (questionIdx + 1) + '_o' + optIdx);
+
+    setTimeout(() => {
+      if (questionIdx < TOTAL_QUESTIONS - 1) {
+        showScreen(questionIdx + 1);
+      } else {
+        showResult();
+      }
+    }, 280);
+  }
+
+  // ─── Back navigation ─────────────────────────────────────────
+  function goBack() {
+    if (currentScreen > 0 && currentScreen < TOTAL_QUESTIONS) {
+      showScreen(currentScreen - 1);
+    }
+  }
+
+  // ─── Analytics Tracking ────────────────────────────────────
+  const TRACKING_URL = 'https://script.google.com/macros/s/AKfycbzh-GOfXA6A8tYKfn7U8fK4MXYI40M5CKMyTPergH9EqvjYGF2j5LbFQE68LhMKsQFm/exec';
+
+  // origem: pago (anúncio) vs orgânico — define a versão de tracking.
+  // PAGO tem prioridade: a tag de campanha do anúncio ([TRAFEGO]/[DRM]/...) ou click id
+  // mandam, INDEPENDENTE do placement (stories/reels no source são placement pago, não orgânico).
+  // Orgânico = sem nenhuma tag de anúncio (ex: utm_campaign=organico, link da bio, direto).
+  function detectaOrigem(){
+    var qs = new URLSearchParams(location.search);
+    var med = (qs.get('utm_medium')||'').toLowerCase();
+    var camp = (qs.get('utm_campaign')||'').toLowerCase();
+    var pago = !!(qs.get('fbclid') || qs.get('gclid') || qs.get('ttclid'))
+      || /\[trafego\]|\[drm\]|\[rmkt\]|\[cbo\]|\[abo\]|trafego|conversao|\bads\b|cpc|cpm|ppc|paid/.test(camp)
+      || /cpc|cpm|ppc|paid/.test(med);
+    return pago ? 'perfis-pago-v2' : 'perfis-organico-v2';
+  }
+  const QUIZ_VERSION = detectaOrigem();
+  try { sessionStorage.setItem('db_quiz_version', QUIZ_VERSION); } catch(e){}
+
+  // ignora bots / crawlers / automação (não poluem o tracking)
+  var EH_BOT = navigator.webdriver === true ||
+    /bot|crawl|spider|slurp|facebookexternalhit|facebookcatalog|whatsapp|telegram|preview|headless|lighthouse|pagespeed|gtmetrix/i.test(navigator.userAgent || '');
+
+  function trackEvent(eventType, profileName) {
+    if (EH_BOT) return;
+    var payload = JSON.stringify({
+      quiz_version: QUIZ_VERSION,
+      event_type: eventType,
+      profile: profileName,
+      user_agent: navigator.userAgent
+    });
+    try {
+      // sendBeacon sobrevive à navegação (quiz_complete redireciona logo em seguida) — fetch seria cancelado
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(TRACKING_URL, new Blob([payload], { type: 'text/plain' }));
+      } else {
+        fetch(TRACKING_URL, { method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'text/plain'}, body:payload });
+      }
+    } catch(e) {}
+  }
+
+  // Quiz start dispara só na PRIMEIRA interação humana real (mouse/toque/scroll/tecla),
+  // não no load — assim prefetch/crawler/preview de link não inflam "iniciaram".
+  var jaIniciou = false;
+  var SINAIS = ['pointerdown','touchstart','keydown','wheel','scroll','mousemove'];
+  function marcarInicio() {
+    if (jaIniciou) return;
+    jaIniciou = true;
+    SINAIS.forEach(function(ev){ window.removeEventListener(ev, marcarInicio); });
+    trackEvent('quiz_start', 'start');
+  }
+  SINAIS.forEach(function(ev){ window.addEventListener(ev, marcarInicio, { passive: true }); });
+
+  // ─── Loading + redirect pro perfil ────────────────────────────
+  const LOADING_MSGS = [
+    'Comparando com mais de 10 mil famílias...',
+    'Identificando o padrão de sono do seu bebê...',
+    'Preparando o resultado completo...'
+  ];
+
+  function showResult() {
+    let profile;
+    if (score >= 6) {
+      profile = PROFILES.coala;
+    } else {
+      // score 1 = Preguiça (bom dormidor); fallback Coruja por segurança
+      profile = PROFILES[score] || PROFILES[2];
+    }
+
+    const SLUGS = { 'Preguiça': 'preguica', 'Coruja': 'coruja', 'Leão': 'leao', 'Suricato': 'suricato', 'Canguru': 'canguru', 'Coala': 'coala' };
+    const slug = SLUGS[profile.animal] || 'coruja';
+
+    trackEvent('quiz_complete', profile.animal);
+    if (window.trackMeta) window.trackMeta('Lead', { content_name: 'quiz-' + slug });
+    else if (window.fbq) fbq('track', 'Lead', { content_name: 'quiz-' + slug });
+
+    showScreen(TOTAL_QUESTIONS);
+
+    // anima barra + troca mensagens durante ~3s, depois redireciona
+    const fill = document.getElementById('loading-fill');
+    const msg = document.getElementById('loading-msg');
+    const passos = [
+      { t: 200,  pct: 25, m: LOADING_MSGS[0] },
+      { t: 1500, pct: 55, m: LOADING_MSGS[1] },
+      { t: 2900, pct: 85, m: LOADING_MSGS[2] },
+      { t: 3800, pct: 100, m: LOADING_MSGS[2] }
+    ];
+    passos.forEach(function (p) {
+      setTimeout(function () {
+        fill.style.width = p.pct + '%';
+        if (msg.textContent !== p.m) { msg.style.opacity = 0; setTimeout(function(){ msg.textContent = p.m; msg.style.opacity = 1; }, 200); }
+      }, p.t);
+    });
+
+    setTimeout(function () {
+      window.location.href = '/v2/' + slug + '/' + window.location.search;
+    }, 4200);
+  }
+
+  // ─── Init ────────────────────────────────────────────────────
+  showScreen(0);
+</script>
+<!-- tt-events -->
+<script>
+(function(){
+  function gp(n){try{return new URLSearchParams(location.search).get(n)||''}catch(e){return''}}
+  var TT=gp('ttclid');
+  try{ if(TT){sessionStorage.setItem('ttclid',TT);} else {TT=sessionStorage.getItem('ttclid')||'';} }catch(e){}
+  var buys=document.querySelectorAll('a.btn-comprar');
+  var PROD={contents:[{content_id:'119638',content_type:'product',content_name:'Dream Baby Pocket'}],value:67,currency:'BRL'};
+  function fire(ev){ try{ if(window.ttq){ ttq.track(ev,PROD); } }catch(e){} }
+  if(buys.length){ if(window.ttq){fire('ViewContent');} else {window.addEventListener('load',function(){fire('ViewContent');});} }
+  buys.forEach(function(a){
+    if(TT){ var h=a.getAttribute('href')||''; if(h.charAt(0)!=='#' && h.indexOf('ttclid=')<0){ a.href=h+(h.indexOf('?')>-1?'&':'?')+'ttclid='+encodeURIComponent(TT); } }
+    a.addEventListener('click',function(){ fire('InitiateCheckout'); });
+  });
+})();
+</script>
+</body>
+</html>
