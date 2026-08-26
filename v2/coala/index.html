@@ -551,10 +551,15 @@ footer .copy{font-size:12.5px;color:rgba(245,237,255,.38)}
 .hero-mascote-mob{display:none}
 html{scroll-behavior:smooth}
 .scroll-hint{text-decoration:none;cursor:pointer}
-@media(max-width:760px){
-  .hero-mascote-mob{display:block;width:172px;margin:8px auto 2px;filter:drop-shadow(0 14px 28px rgba(0,0,0,.42))}
+@media(max-width:900px){
+  /* topo do hero centralizado no mobile (que nem o resto do site): tag, titulo, mascote, descritivo */
+  .hero-grid{text-align:center}
+  .hero-destaque{border-left:0;padding-left:0}
+  /* mascote logo abaixo do titulo, menor e charmoso */
+  .hero-mascote-mob{display:block;width:172px;margin:10px auto 4px;filter:drop-shadow(0 14px 28px rgba(0,0,0,.42))}
   .hero-mascote-mob img{width:100%;height:auto;display:block}
-  .hero-grid .hero-mascote{display:none}
+  /* nuvem sobre o titulo do "Existe um caminho": menor e mais discreta pra nao atrapalhar a leitura */
+  .sec-sky .deco{opacity:.16 !important;max-width:120px;height:auto !important}
 }
 </style>
 <!-- Meta Pixel -->
